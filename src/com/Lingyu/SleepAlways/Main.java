@@ -1,5 +1,6 @@
 package com.Lingyu.SleepAlways;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -9,8 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Main extends JavaPlugin implements Listener {
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 
+public class Main extends JavaPlugin implements Listener {
+	int task1;
 	// Fired when plugin is enabled
     @Override
     public void onEnable() {
@@ -25,11 +29,18 @@ public class Main extends JavaPlugin implements Listener {
     
     @EventHandler
     public void onPlayerSleeping(PlayerBedEnterEvent event) {
-    	Player player = event.getPlayer();
+    	task1 = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+            public void run() {
+            	Player player = event.getPlayer();
+            	String message = "¡±6¡±lSleeping...";
     		if (player.isSleeping()) {
     		    CraftHumanEntity entity = (CraftPlayer) player;
     		    entity.getHandle().sleepTicks = 0;
-    	}
-    	
-    }
+    		    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
+    		} else {
+    			Bukkit.getScheduler().cancelTask(task1);
+    		}
+            }
+    	}, 100l, 100l);
+}
 }
