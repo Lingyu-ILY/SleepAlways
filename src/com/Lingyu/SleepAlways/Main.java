@@ -4,8 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,9 +32,10 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerSleeping(PlayerBedEnterEvent event) {
     	task1 = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
-            public void run() {
+    		@Override
+    		public void run() {
             	Player player = event.getPlayer();
-            	String message = "¡±6¡±lSleeping...";
+            	String message = "Â§6Â§lSleeping...";
     		if (player.isSleeping()) {
     		    CraftHumanEntity entity = (CraftPlayer) player;
     		    entity.getHandle().sleepTicks = 0;
@@ -42,5 +45,16 @@ public class Main extends JavaPlugin implements Listener {
     		}
             }
     	}, 100l, 100l);
-}
+    }
+    @EventHandler(priority = EventPriority.HIGH)
+	public void onPlayerSleepingChat(AsyncPlayerChatEvent event) {
+    	Player player = event.getPlayer();
+		String str = event.getMessage();
+		int result = str.indexOf("/");
+	if (result != -1) {
+		if (player.isSleeping()) {
+			event.setCancelled(true);
+		}
+	}
+	}
 }
