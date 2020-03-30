@@ -4,8 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftHumanEntity;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -35,11 +35,9 @@ public class Main extends JavaPlugin implements Listener {
     		@Override
     		public void run() {
             	Player player = event.getPlayer();
-            	String message = "§6§lSleeping...";
     		if (player.isSleeping()) {
     		    CraftHumanEntity entity = (CraftPlayer) player;
     		    entity.getHandle().sleepTicks = 0;
-    		    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(message));
     		} else {
     			Bukkit.getScheduler().cancelTask(task1);
     		}
@@ -47,14 +45,12 @@ public class Main extends JavaPlugin implements Listener {
     	}, 100l, 100l);
     }
     @EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerSleepingChat(AsyncPlayerChatEvent event) {
+	public void onPlayerSleepingChat(PlayerCommandPreprocessEvent event) {
     	Player player = event.getPlayer();
-		String str = event.getMessage();
-		int result = str.indexOf("/");
-	if (result != -1) {
+    	String message = "§7  無法使用指令,請先離開床上";
 		if (player.isSleeping()) {
 			event.setCancelled(true);
+			player.spigot().sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(message));
 		}
-	}
 	}
 }
