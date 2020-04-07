@@ -47,7 +47,7 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerSleepingChat(PlayerCommandPreprocessEvent event) {
     	Player player = event.getPlayer();
-    	String message = "§7  無法使用指令,請先離開床上";
+    	String message = "§7   無法使用指令,請先離開床上";
 		if (player.isSleeping()) {
 			event.setCancelled(true);
 			player.spigot().sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacyText(message));
